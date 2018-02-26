@@ -1,0 +1,87 @@
+cobra.appp
+alex....
+admin
+
+
+category:
+id, name, slug, status, created_at, updated_at
+
+services:
+id, category_id, name, slug, page_title, meta_keywords, meta_description, status, created_at, updated_at
+
+dynamic_fields:
+id, field_type(text, textarea, select, multiselect, radio, checkbox), status
+
+questions:
+id, service_id, status
+
+question_details:
+id, question_id, label, dynamic_field_id, is_mandatory, is_time_picker, is_date_picker, standard_field_slug
+
+question_options:
+id, question_detail_id, option_name, option_value
+
+answers: frontend
+id, user_id, category_id, subcategory_id, 
+
+--------------------------------
+
+add question:
+
+select category
+select subcategory
+
+add question label
+add answer settings
+select field type
+  - add options if not text
+    - option name, option value
+    - add more +
+is mandatory
+
+add more +
+
+
+Admin:
+------
+
+category:
+	- add/edit/delete
+
+services:
+	- add/edit/delete
+	
+	Add:
+	- select category
+	- service name
+	- page tirle
+	- meta keywords
+	- meta description
+	- status
+
+Questionnaire:
+	- add/edit/delete
+
+	Add:
+	- select service
+	- select standared question
+	- add more fields
+	dynamic fields:
+	- select question type
+	- is mandatory
+	- according to selection, display fields
+	if text box, display datepicker and timepicker fields
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,737 @@
+CREATE TABLE `category_type` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(250) NOT NULL , `status` TINYINT(1) NOT NULL DEFAULT '1' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+INSERT INTO `category_type` (`id`, `name`, `status`) VALUES (NULL, 'Online Order', '1'), (NULL, 'Online Shopping', '1'), (NULL, 'Table Booking', '1'), (NULL, 'Appointment Booking', '1'), (NULL, 'Services Booking', '1'), (NULL, 'Others', '0');
+
+ALTER TABLE `category` ADD `category_type` TEXT NOT NULL AFTER `updated_at`;
+
+CREATE TABLE `category_tags` ( `id` INT NOT NULL AUTO_INCREMENT , `category_id` INT NOT NULL , `name`  VARCHAR(250) NOT NULL , `slug` VARCHAR(250) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`slug`)) ENGINE = InnoDB;
+
+CREATE TABLE `listing_images` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `image_name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `listing` ADD `category_tags` TEXT NOT NULL AFTER `updated_at`;
+
+--------------------------------------------
+
+ALTER TABLE `listing` ADD `lat_long` VARCHAR(255) NOT NULL AFTER `category_tags`;
+
+ALTER TABLE users
+ADD COLUMN mobile_no VARCHAR(12) AFTER email,
+ADD COLUMN otp_code INT(5) AFTER mobile_no,
+ADD COLUMN otp_valid INT(11) DEFAULT "1" AFTER otp_code,
+ADD COLUMN verified INT(5) DEFAULT "0" AFTER otp_valid;	
+
+--------------------------------------------
+
+ALTER TABLE `listing` ADD `slug` VARCHAR(255) NULL AFTER `title`, ADD UNIQUE (`slug`);
+
+CREATE TABLE `listing_views` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `merchant_id` INT NOT NULL , `ip` VARCHAR(30) NOT NULL , `device` VARCHAR(255) NOT NULL , `browser` VARCHAR(255) NOT NULL , `user_type` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `listing_views` ADD `created_at` TIMESTAMP NULL AFTER `user_type`, ADD `updated_at` TIMESTAMP NULL AFTER `created_at`;
+ALTER TABLE `listing_views` ADD `user_id` INT NULL AFTER `merchant_id`;
+ALTER TABLE `listing_views` ADD `cookie_id` VARCHAR(255) NOT NULL AFTER `updated_at`;
+ALTER TABLE `listing_views` ADD `platform` VARCHAR(200) NOT NULL AFTER `cookie_id`, ADD `isDesktop` TINYINT(1) NOT NULL DEFAULT '0' AFTER `platform`, ADD `isPhone` TINYINT(1) NOT NULL DEFAULT '0' AFTER `isDesktop`, ADD `isRobot` TINYINT(1) NOT NULL DEFAULT '1' AFTER `isPhone`;
+ALTER TABLE `listing_views` ADD `robot` VARCHAR(250) NULL AFTER `isRobot`;
+
+ALTER TABLE `listing` ADD `listing_view_count` INT NOT NULL DEFAULT '0' AFTER `lat_long`;
+
+CREATE TABLE `merchant_services` ( `id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `category_type_id` INT NOT NULL , `is_enable` TINYINT(1) NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `table_booking_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `merchant_id` INT NOT NULL , `start_time` varchar(5) NOT NULL , `end_time` varchar(5) NOT NULL , `time_interval` INT NOT NULL , `people_limit` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `category_type` ADD `slug` VARCHAR(250) NOT NULL AFTER `status`;
+
+UPDATE `category_type` SET `slug` = 'online-order' WHERE `category_type`.`id` = 1; UPDATE `category_type` SET `slug` = 'online-shopping' WHERE `category_type`.`id` = 2; UPDATE `category_type` SET `slug` = 'table-booking' WHERE `category_type`.`id` = 3; UPDATE `category_type` SET `slug` = 'appointment-booking' WHERE `category_type`.`id` = 4; UPDATE `category_type` SET `slug` = 'services-booking' WHERE `category_type`.`id` = 5; UPDATE `category_type` SET `slug` = 'others' WHERE `category_type`.`id` = 6;
+
+CREATE TABLE `table_booking_order` ( `id` INT NOT NULL , `user_id` INT NULL , `listing_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_date` DATETIME NOT NULL , `booked_date` DATE NOT NULL , `booked_time` VARCHAR(250) NOT NULL , `total_peoples` INT NOT NULL , `name` VARCHAR(250) NOT NULL , `phone_number` VARCHAR(30) NOT NULL , `email` VARCHAR(250) NOT NULL , `additional_request` TEXT NOT NULL , `status` VARCHAR(50) NOT NULL ) ENGINE = InnoDB;
+
+ALTER TABLE `table_booking_order` ADD PRIMARY KEY(`id`);
+ALTER TABLE `table_booking_order` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;
+
+
+-----------------------------------------------------------------------------------
+ALTER TABLE `users` ADD `channel` VARCHAR(20)  AFTER `referred`;
+ALTER TABLE `users` ADD `referred` INT(11)  AFTER `verified`;
+
+
+CREATE TABLE `listing_review` (
+  `r_id` int(11) NOT NULL AUTO_INCREMENT,
+  `merchant_id` int(11) DEFAULT NULL,
+  `listing_id` int(11) DEFAULT NULL,
+  `name` varchar(250) DEFAULT NULL,
+  `comments` varchar(500) DEFAULT NULL,
+  `rating` varchar(10) DEFAULT NULL,
+  `location` varchar(20) DEFAULT NULL,
+  `approved` int(5) DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`r_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+------------------------------------------------------------------------------------
+
+CREATE TABLE `appointment_booking_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `merchant_id` INT NOT NULL , `start_time` VARCHAR(5) NOT NULL , `end_time` VARCHAR(5) NOT NULL , `time_interval` INT NOT NULL , `people_limit` TINYINT(1) NOT NULL DEFAULT '1' , `status` TINYINT(1) NOT NULL DEFAULT '1' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `listing` ADD `lattitude` FLOAT NULL AFTER `lat_long`, ADD `longitude` FLOAT NULL AFTER `lattitude`;
+-----------------------------------------------------------------------------------
+
+ALTER TABLE `listing_review` ADD `email` VARCHAR(100)  AFTER `name`;
+
+ALTER TABLE `listing_review` ADD `user_id` INT(11)  AFTER `listing_id`; 
+
+ALTER TABLE table_booking_order ADD `created_at` DATETIME  AFTER `status`;
+
+ALTER TABLE table_booking_order ADD `updated_at` DATETIME  AFTER `created_at`;
+
+ALTER TABLE table_booking_order MODIFY COLUMN `order_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+ALTER TABLE table_booking_order MODIFY COLUMN `status` INT(11) NOT NULL DEFAULT 0;
+
+
+------------------------------------------------------------------------------------
+
+CREATE TABLE `appointment_booking_order` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `listing_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_date` DATETIME NOT NULL , `booked_date` DATE NOT NULL , `booked_time` VARCHAR(10) NOT NULL , `total_peoples` TINYINT(1) NOT NULL DEFAULT '1' , `name` VARCHAR(250) NOT NULL , `phone_number` VARCHAR(30) NOT NULL , `email` VARCHAR(250) NOT NULL , `additional_request` TEXT NOT NULL , `status` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+------------------------------------------------------------------------------------
+ALTER TABLE listing ADD	`website` varchar(255) NULL AFTER `listing_view_count`;
+
+ALTER TABLE listing ADD `working_hours` varchar(255) NULL AFTER `website`; 
+
+ALTER TABLE listing ADD `holidays` varchar(255) NULL AFTER `working_hours`;
+
+ALTER TABLE table_booking_order MODIFY COLUMN `status` INT(11) NOT NULL DEFAULT 0;
+
+ALTER TABLE table_booking_order MODIFY COLUMN `status` INT(11) NOT NULL DEFAULT 0;
+
+ALTER TABLE appointment_booking_order MODIFY COLUMN `status` INT(11) NOT NULL DEFAULT 0;
+
+ALTER TABLE table_booking_settings ADD `status` INT(11) NULL;
+
+------------------------------------------------------------------------------------
+
+ALTER TABLE `table_booking_settings` CHANGE `status` `status` TINYINT(1) NOT NULL DEFAULT '1';
+
+CREATE TABLE `food_menu` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(250) NOT NULL , `image_name` VARCHAR(100) NOT NULL , `status` INT(1) NOT NULL , `added_by` VARCHAR(10) NOT NULL , `created_at` DATETIME NOT NULL , `updated_at` DATETIME NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `food_menu_merchant` ( `id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `food_menu_id` INT NOT NULL , `status` TINYINT(1) NOT NULL DEFAULT '1' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `food_menu_item` ( `id` INT NOT NULL AUTO_INCREMENT , `food_menu_merchant_id` INT NOT NULL , `merchant_id` INT NOT NULL , `item_type` VARCHAR(10) NOT NULL , `name` VARCHAR(200) NOT NULL , `description` TEXT NOT NULL , `image_name` VARCHAR(200) NOT NULL , `original_price` FLOAT NOT NULL , `discounted_price` FLOAT NOT NULL , `status` TINYINT(1) NOT NULL DEFAULT '1' , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `food_menu_item` ADD `listing_id` INT NOT NULL AFTER `merchant_id`;
+
+ALTER TABLE `currency` ADD `is_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `updated_at`;
+
+UPDATE `currency` SET `is_default` = '1' WHERE `currency`.`id` = 1;
+
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `order_online_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `estimated_delivery_time` INT NOT NULL , `delivery_fee` FLOAT NOT NULL , `minimum_delivery_amount` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+------------------------------------------------------------------------------------
+
+CREATE TABLE `order_booking` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `listing_id` INT NOT NULL , `merchant_id` INT NOT NULL , `name` VARCHAR(250) NOT NULL , `phone_number` VARCHAR(30) NOT NULL , `email` VARCHAR(250) NOT NULL , `comments` TEXT NOT NULL , `total_amount` FLOAT NOT NULL , `tax_name1` VARCHAR(100) NOT NULL , `tax_percent1` INT NOT NULL , `tax_name2` VARCHAR(100) NOT NULL , `tax_percent2` INT NOT NULL , `tax_total` FLOAT NOT NULL , `total_items` INT NOT NULL , `payment_type` VARCHAR(50) NOT NULL , `status` VARCHAR(50) NOT NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `order_booking` ADD `billing_detail_id` INT NOT NULL AFTER `merchant_id`;
+
+CREATE TABLE `billing_detail` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL DEFAULT '0' , `b_address_1` VARCHAR(250) NOT NULL , `b_address_2` VARCHAR(250) NOT NULL , `b_city` INT NOT NULL , `b_state` INT NOT NULL , `b_country` INT NOT NULL , `b_pincode` VARCHAR(8) NOT NULL , `s_address_1` VARCHAR(250) NOT NULL , `s_address_2` VARCHAR(250) NOT NULL , `s_city` INT NOT NULL , `s_state` INT NOT NULL , `s_country` INT NOT NULL , `s_pincode` VARCHAR(8) NOT NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `order_booking_detail` ( `id` INT NOT NULL AUTO_INCREMENT , `order_id` INT NOT NULL , `menu_item_id` INT NOT NULL , `unit_price` FLOAT NOT NULL , `quantity` INT NOT NULL , `total_amount` FLOAT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `billing_detail` ADD `b_name` VARCHAR(250) NOT NULL AFTER `s_pincode`, ADD `b_company` VARCHAR(250) NOT NULL AFTER `b_name`, ADD `s_name` VARCHAR(250) NOT NULL AFTER `b_company`, ADD `s_company` VARCHAR(250) NOT NULL AFTER `s_name`;
+
+ALTER TABLE `order_booking` ADD `sub_total` FLOAT NOT NULL AFTER `comments`;
+
+CREATE TABLE `payment_gateway` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(200) NOT NULL , `has_settings` TINYINT(1) NOT NULL DEFAULT '1' , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `payment_gateway` ADD `status` TINYINT(1) NOT NULL DEFAULT '1' AFTER `has_settings`;
+
+CREATE TABLE `payment_gateway_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `payment_gateway_id` INT NOT NULL , `business_email` VARCHAR(250) NOT NULL , `api_key` VARCHAR(250) NOT NULL , `secret_key` VARCHAR(250) NOT NULL , `currency_id` INT NOT NULL , `mode` VARCHAR(5) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+INSERT INTO `payment_gateway` (`id`, `name`, `is_default`, `has_settings`) VALUES (NULL, 'Cash On Delivery', '1', '0'), (NULL, 'Paypal', '0', '1');
+
+ALTER TABLE `payment_gateway_settings` ADD `merchant_id` INT NOT NULL AFTER `id`;
+
+ALTER TABLE `payment_gateway_settings` ADD `status` TINYINT(1) NOT NULL DEFAULT '0' AFTER `mode`;
+
+-----------------------------------------------------------------------------------------------------------------
+CREATE TABLE `shop_alt_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `proId` int(11) NOT NULL,
+  `alt_img` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22;
+
+insert  into `shop_alt_images`(`id`,`proId`,`alt_img`,`status`) values (1,19,'5.jpg',0),(2,19,'4.jpg',0),(3,19,'3.jpg',0),(4,19,'1download.jpg',0),(5,19,'14917953995.jpg',0),(6,26,'14917954523.jpg',0),(7,26,'14917954554.jpg',0),(8,26,'14917954641download.jpg',0),(9,26,'14917955093.jpg',0),(10,26,'14917956711download.jpg',0),(11,26,'14917956772.jpg',0),(12,26,'14917956805.jpg',0),(13,2,'1491907409EZ TC GOLD.png',0),(14,1,'15040804791487487699.Enchantment-Book-Cover-Best-Seller1.jpg',0),(15,1,'15040804881490337108.64-64.jpg',0),(18,1,'1505382467download (2).jpg',0),(19,2,'1505386524download (3).jpg',0),(20,9,'1505472898Sony-PlayStation-3-Eye.png',0),(21,9,'1505739043came.jpg',0);
+
+CREATE TABLE `shop_orders` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `total` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `shop_orders_products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `total` float NOT NULL,
+  `products_id` int(11) NOT NULL,
+  `orders_id` int(11) NOT NULL,
+  `tax` varchar(255) NOT NULL,
+  `qty` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19;
+
+CREATE TABLE `shop_pro_cat` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `status` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert  into `shop_pro_cat`(`id`,`name`,`created_at`,`updated_at`,`status`) values (1,'electronics',NULL,NULL,0),(2,'automobiles',NULL,NULL,0),(3,'movies',NULL,NULL,0),(4,'books',NULL,NULL,0);
+
+CREATE TABLE `shop_products` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pro_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `pro_code` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `pro_price` int(11) NOT NULL,
+  `pro_info` text COLLATE utf8_unicode_ci NOT NULL,
+  `pro_img` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `stock` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `new_arrival` tinyint(1) NOT NULL,
+  `spl_price` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `cat_id` int(11) NOT NULL,
+  `merchant_id` int(11) DEFAULT NULL,
+  `listing_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert  into `shop_products`(`id`,`pro_name`,`pro_code`,`pro_price`,`pro_info`,`pro_img`,`stock`,`new_arrival`,`spl_price`,`cat_id`,`merchant_id`,`listing_id`,`created_at`,`updated_at`) values (9,'cam','new',1250,'test details','1505472898Sony-PlayStation-3-Eye.png','2',0,'',1,12,3,'2017-09-15 07:12:32','2017-09-15 07:12:32'),(10,'watrc','watch',500,'test details','1505472898Sony-PlayStation-3-Eye.png','8',0,'',1,12,3,'2017-09-15 07:12:54','2017-09-15 07:12:54'),(11,'headphone','head-phone',200,'tesy','headph.jpg','5',0,'120',1,12,3,'2017-09-15 07:13:29','2017-09-15 07:13:29'),(12,'test','test-img',2000,'','tes.jpg','4',0,'1800',2,12,3,'2017-09-15 07:25:28','2017-09-15 07:25:28'),(13,'mirr','mirr',200,'test product test details','mirr.jpg','3',0,'150',2,12,3,'2017-09-15 07:26:00','2017-09-15 07:26:00'),(14,'dist','dist',700,'','test.png','2',0,'',2,12,3,'2017-09-15 07:26:25','2017-09-15 07:26:25'),(15,'new img','new-img',2000,'test description test detail for the product in electronics','cam.jpg','1',0,'1800',2,12,3,'2017-09-15 11:57:13','2017-09-15 11:57:13');
+
+CREATE TABLE `shop_products_properties` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pro_id` int(11) NOT NULL,
+  `size` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `p_price` varchar(255) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5;
+
+CREATE TABLE `shop_recommends` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pro_id` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=263 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE `shop_reviews` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `person_name` varchar(255) NOT NULL,
+  `person_email` varchar(255) NOT NULL,
+  `review_content` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3;
+
+CREATE TABLE `shop_wishlist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `pro_id` int(11) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13;
+
+-----------------------------------------------------
+
+ALTER TABLE `order_booking` ADD `delivery_fee` FLOAT NOT NULL AFTER `sub_total`;
+
+ALTER TABLE `order_booking` ADD `payment_gateway_id` INT NOT NULL AFTER `billing_detail_id`;
+------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `paypal_log` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `txn_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `payment_gross` float(10,2) NOT NULL,
+  `currency_code` varchar(5) COLLATE utf8_unicode_ci NOT NULL,
+  `payer_email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `payment_status` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE `paypal_log`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `paypal_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--------------------------------------------------------------------------------------------
+
+CREATE TABLE `shop_online_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `merchant_id` int(11) NOT NULL,
+  `estimated_delivery_time` int(11) NOT NULL,
+  `delivery_fee` float NOT NULL,
+  `minimum_delivery_amount` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `shop_order_booking_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `unit_price` float NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `total_amount` float NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+-------------------------------------------------------------------------------------------
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `read` int(11) DEFAULT '0',
+  `type` varchar(100) DEFAULT NULL,
+  `listing_id` int(11) DEFAULT NULL,
+  `merchant_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+-------------------------------------------------------------------------------------------
+
+ALTER TABLE `order_booking` ADD `order_type` VARCHAR(200) NOT NULL AFTER `updated_at`;
+
+CREATE TABLE `listing_tags` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `category_tag_id` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+------------------------------------------------------------------------------------------
+CREATE TABLE `local_vendor` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `description` varchar(250) DEFAULT NULL,
+  `image_name` varchar(200) DEFAULT NULL,
+  `latitude` varchar(50) DEFAULT NULL,
+  `longitude` varchar(50) DEFAULT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `website` varchar(100) DEFAULT NULL,
+  `listing_date` date DEFAULT NULL,
+  `start_time` varchar(50) DEFAULT NULL,
+  `status` int(11) DEFAULT '1',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `end_time` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+
+
+--------------------------------------------------------------------------------------------
+
+CREATE TABLE `contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `listing_id` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+-------------------------------------------------------------------------------------------
+ALTER TABLE `countries` ADD `default` INT(11) AFTER `status`;
+
+
+
+
+
+ALTER TABLE `ads_pricing` ADD `cat_id` INT(11) AFTER `price`;
+ALTER TABLE `ads_pricing` ADD `s_cat_id` INT(11) AFTER `cat_id`;
+ALTER TABLE `ads_pricing` ADD `state_id` INT(11) AFTER `s_cat_id`;
+
+
+ALTER TABLE `ads_pricing` ADD `city_id` INT(11) AFTER `state_id`;
+ALTER TABLE `ads_pricing` ADD `mode` VARCHAR(50) AFTER `city_id`;
+ALTER TABLE `ads_pricing` ADD `zone` VARCHAR(50) AFTER `mode`;
+
+
+-------------------------------------------------------------------------------------------
+ALTER TABLE `ads_position` ADD `type` VARCHAR(50) AFTER `title`;
+---------------------------------------------------------------------------------------
+
+ALTER TABLE `subscription_features` ADD `functionality_name` VARCHAR(50) NOT NULL AFTER `title`;
+
+ALTER TABLE `subscription_pricing` ADD `order_by` INT(1) NOT NULL DEFAULT '0' AFTER `updated_at`;
+
+CREATE TABLE `payment_gateway_site` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(200) NOT NULL , `status` TINYINT(1) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `payment_gateway_site` ADD `has_settings` TINYINT(1) NOT NULL AFTER `name`;
+
+CREATE TABLE `payment_gateway_site_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `payment_gateway_site_id` INT NOT NULL , `business_email` VARCHAR(250) NOT NULL , `api_key` VARCHAR(250) NOT NULL , `secret_key` VARCHAR(250) NOT NULL , `currency_id` INT NOT NULL , `mode` VARCHAR(5) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `subscription_term` (
+  `id` int(11) NOT NULL,
+  `display_value` varchar(100) NOT NULL,
+  `term_type` enum('month','year','days') NOT NULL DEFAULT 'month',
+  `term_value` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `subscription_term`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `subscription_term`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+INSERT INTO `subscription_term` (`id`, `display_value`, `term_type`, `term_value`) VALUES
+(1, '1 month', 'month', 1),
+(2, '6 months', 'month', 6),
+(3, '1 year', 'year', 1);
+
+CREATE TABLE `vendor_subscriptions` ( `id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `subscription_pricing_id` INT NOT NULL , `subscription_term_id` INT NOT NULL , `currency_id` INT NOT NULL , `payment_gateway_id` INT NOT NULL , `plan_detail` TEXT NOT NULL , `unit_price` FLOAT NOT NULL , `paid_amount` FLOAT NOT NULL , `payment_status` VARCHAR(50) NOT NULL , `subscribed_date` DATETIME NOT NULL , `expired_date` DATETIME NOT NULL , `renewed_date` DATETIME NOT NULL , `created_at` DATETIME NOT NULL , `updated_at` DATETIME NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `users` ADD `category_id` INT NOT NULL AFTER `updated_at`, ADD `last_subscription_id` INT NOT NULL AFTER `category_id`, ADD `next_renewal_date` DATETIME NOT NULL AFTER `last_subscription_id`;
+ALTER TABLE `vendor_subscriptions` CHANGE `renewed_date` `renewed_date` DATETIME NULL;
+
+
+CREATE TABLE `ebs_transaction_site` (
+  `id` int(10) NOT NULL,
+  `BillingAddress` varchar(250) NOT NULL,
+  `BillingCity` varchar(100) NOT NULL,
+  `BillingCountry` varchar(20) NOT NULL,
+  `BillingEmail` varchar(250) NOT NULL,
+  `BillingName` varchar(200) NOT NULL,
+  `BillingPhone` varchar(20) NOT NULL,
+  `BillingPostalCode` varchar(10) NOT NULL,
+  `DateCreated` varchar(20) NOT NULL,
+  `Description` varchar(10) NOT NULL,
+  `IsFlagged` varchar(10) NOT NULL,
+  `MerchantRefNo` varchar(250) NOT NULL,
+  `Mode` varchar(20) NOT NULL,
+  `PaymentID` varchar(250) NOT NULL,
+  `PaymentMethod` varchar(250) NOT NULL,
+  `RequestID` varchar(200) NOT NULL,
+  `ResponseCode` varchar(200) NOT NULL,
+  `ResponseMessage` varchar(250) NOT NULL,
+  `SecureHash` text NOT NULL,
+  `Amount` varchar(20) NOT NULL,
+  `TransactionID` varchar(200) NOT NULL
+) ENGINE=InnoDB;
+ALTER TABLE `ebs_transaction_site`
+  ADD PRIMARY KEY (`id`);
+ALTER TABLE `ebs_transaction_site`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `users` ADD `address` VARCHAR(250) NOT NULL AFTER `mobile_no`, ADD `city_name` VARCHAR(200) NOT NULL AFTER `address`;
+
+ALTER TABLE `users` ADD `postal_code` VARCHAR(10) NOT NULL AFTER `city_name`;
+------------------------------------------------------------
+ALTER TABLE `ads_pricing` ADD `default` VARCHAR(50) NOT NULL AFTER `zone`;
+INSERT INTO `ads_pricing` (`default`) VALUES ( '500');
+
+CREATE TABLE `site_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `country_id` INT NOT NULL , `city_id` INT NOT NULL , `currency_id` INT NOT NULL , `notification_email` VARCHAR(250) NOT NULL , `site_email` VARCHAR(250) NULL , `site_contact_no` VARCHAR(250) NULL , `site_address` TEXT NULL , `facebook_url` VARCHAR(200) NULL , `twitter_url` VARCHAR(200) NULL , `gplus_url` VARCHAR(200) NULL , `pinterest_url` VARCHAR(200) NULL , `linkedin_url` VARCHAR(200) NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `notifications` ADD `is_for_admin` TINYINT(1) NOT NULL DEFAULT '0' AFTER `merchant_id`;
+
+ALTER TABLE `users` ADD `merchant_status` INT(1) NOT NULL DEFAULT '0' AFTER `next_renewal_date`;
+--------------------------------------------------------------------------------------------
+
+CREATE TABLE `user_campaigns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cat_id` int(11) DEFAULT NULL,
+  `s_cat_id` int(11) DEFAULT NULL,
+  `state_id` int(11) DEFAULT NULL,
+  `city_id` int(11) DEFAULT NULL,
+  `zone` varchar(100) DEFAULT NULL,
+  `position_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `mode` varchar(100) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `url` varchar(100) DEFAULT NULL,
+  `image` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=latin1;
+
+ALTER TABLE `user_campaigns` ADD `cat_id` INT(11) AFTER `id`;
+ALTER TABLE `user_campaigns` ADD `s_cat_id` INT(11) AFTER `cat_id`;
+ALTER TABLE `ads_position` ADD `m_image` VARCHAR(100) AFTER `title`;
+ALTER TABLE `ads_position` ADD `d_image` VARCHAR(100) AFTER `m_image`;
+
+UPDATE countries SET `default`=1 WHERE id='101';
+UPDATE countries SET `default`=0 WHERE id!='101';
+----------------------------------------------------------------------------------
+CREATE TABLE `ads_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `u_c_id` int(11) DEFAULT NULL,
+  `payment_gateway_id` int(11) DEFAULT NULL,
+  `payment_type` varchar(50) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `amount` varchar(100) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+ALTER TABLE `category` ADD UNIQUE(`slug`);
+
+ALTER TABLE `payment_gateway_site` ADD `is_default` TINYINT(1) NOT NULL DEFAULT '0' AFTER `status`;
+
+UPDATE `payment_gateway_site` SET `is_default` = '1' WHERE `payment_gateway_site`.`id` = 1;
+
+CREATE TABLE `payment_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , `account_holder_name` VARCHAR(250) NOT NULL , `account_id` INT NOT NULL , `bank_name` VARCHAR(250) NOT NULL , `ifsc_code` VARCHAR(20) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+----------------------------------------------------------------------------------
+
+ALTER TABLE `site_settings` ADD `merchant_commision_percent` INT NOT NULL AFTER `linkedin_url`;
+ALTER TABLE `site_settings` ADD `days_to_pay_merchant` INT NOT NULL AFTER `merchant_commision_percent`;
+ALTER TABLE `site_settings` ADD `city_lattitude` FLOAT NOT NULL AFTER `currency_id`, ADD `city_longitude` FLOAT NOT NULL AFTER `city_lattitude`;
+
+-----------------------------------------------------------------------------------------
+Date:06-11-2017
+
+ALTER TABLE `shop_products` CHANGE `pro_price` `pro_price` FLOAT NOT NULL;
+ALTER TABLE `shop_products` CHANGE `spl_price` `spl_price` FLOAT NOT NULL;
+
+--------------------------------------------------------------
+
+ALTER TABLE `vendor_subscriptions` ADD `razorpay_payment_id` VARCHAR(200) NULL AFTER `updated_at`;
+
+--------------------------------------------------------------
+
+ALTER TABLE `shop_products` ADD `shipping_price` FLOAT NOT NULL DEFAULT '0' AFTER `spl_price`;
+
+-----------------------------------------------------------------------------------
+Date : 09-11-2017
+
+ALTER TABLE `local_vendor` CHANGE `name` `owner_name` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+
+ALTER TABLE `local_vendor` CHANGE `image_name` `image` VARCHAR(200) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+
+
+
+ALTER TABLE `local_vendor` ADD `title` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER `email`;
+
+ALTER TABLE `local_vendor` ADD `address` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER `description`;
+
+ALTER TABLE `local_vendor` ADD `working_hours` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER `website`;
+
+ALTER TABLE `local_vendor`DROP `start_time`,DROP `end_time`;
+
+
+--------------------------------------------------------------
+
+CREATE TABLE `merchant_orders` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `order_booking_id` INT NOT NULL , `total_items` INT NOT NULL , `total_shipping_amount` FLOAT NOT NULL , `total_tax_amount` FLOAT NOT NULL , `total_amount` DOUBLE NOT NULL , `total_refund_amount` FLOAT NOT NULL , `site_commission_amount` FLOAT NOT NULL , `merchant_net_amount` FLOAT NOT NULL , `order_type` VARCHAR(10) NOT NULL , `payment_type` VARCHAR(10) NOT NULL , `payment_status` VARCHAR(50) NOT NULL , `order_status` VARCHAR(50) NOT NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `order_booking_detail` ADD `merchant_order_id` INT NOT NULL AFTER `total_amount`, ADD `status` VARCHAR(50) NOT NULL AFTER `merchant_order_id`;
+
+ALTER TABLE `order_booking_detail` CHANGE `menu_item_id` `item_id` INT(11) NOT NULL;
+
+ALTER TABLE `merchant_orders` ADD `sub_total` DOUBLE NOT NULL AFTER `total_items`;
+
+ALTER TABLE `order_booking` CHANGE `sub_total` `sub_total` DOUBLE NOT NULL, CHANGE `total_amount` `total_amount` DOUBLE NOT NULL;
+
+ALTER TABLE `order_booking` ADD `razorpay_payment_id` VARCHAR(200) NULL AFTER `order_type`;
+
+ALTER TABLE `order_booking` ADD `online_paid_amount` DOUBLE NOT NULL AFTER `total_amount`;
+
+ALTER TABLE `food_menu_item` ADD `stock` INT NOT NULL AFTER `discounted_price`;
+
+------------------------------------------------------------------------------------
+
+ALTER TABLE `order_booking` ADD `payment_status` VARCHAR(100) NULL AFTER `razorpay_payment_id`;
+
+ALTER TABLE `merchant_orders` CHANGE `order_type` `order_type` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `payment_type` `payment_type` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+ALTER TABLE `order_booking_detail` ADD `created_at` TIMESTAMP NOT NULL AFTER `status`, ADD `updated_at` TIMESTAMP NOT NULL AFTER `created_at`;
+-------------------------------------------------------------------------------------
+
+ALTER TABLE `vendor_subscriptions` ADD `refund_info` TEXT NULL AFTER `razorpay_payment_id`;
+
+
+ALTER TABLE `local_vendor` DROP `email`;
+
+--------------------------------------------------------------------------------------
+Date: 13-11-2017
+ALTER TABLE `local_vendor` CHANGE `status` `status` VARCHAR(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+
+----------------------------------------------------------------------------------------
+Date: 14-11-2017
+ALTER TABLE `local_vendor` ADD `end_time` VARCHAR(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL AFTER `start_time`;
+
+ALTER TABLE `local_vendor` ADD `start_time` VARCHAR(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL AFTER `status`;
+
+----------------------------------------------------------------------------------------
+
+ALTER TABLE `users` ADD `cart_data` TEXT NULL AFTER `merchant_status`;
+
+----------------------------------------------------------------------------------------
+
+ALTER TABLE `category_type` ADD `commission_type` ENUM('flat','percent') NULL AFTER `slug`, ADD `commission_value` FLOAT NOT NULL DEFAULT '0' AFTER `commission_type`;
+
+ALTER TABLE `site_settings` ADD `user_local_vendor_active_time` INT NOT NULL DEFAULT '3' AFTER `days_to_pay_merchant`;
+
+ALTER TABLE `site_settings` ADD `signup_user_points` INT NOT NULL DEFAULT '10' AFTER `user_local_vendor_active_time`, ADD `signup_vendor_commission` FLOAT NOT NULL DEFAULT '10' AFTER `signup_user_points`, ADD `scanning_user_points` INT NOT NULL DEFAULT '10' AFTER `signup_vendor_commission`, ADD `scanning_vendor_commission` INT NOT NULL DEFAULT '10' AFTER `scanning_user_points`, ADD `scanning_user_period` INT NOT NULL DEFAULT '12' AFTER `scanning_vendor_commission`;
+
+CREATE TABLE `local_vendor_marketing` ( `id` INT NOT NULL AUTO_INCREMENT , `marketing_person_id` INT NULL , `marketing_person_name` VARCHAR(250) NULL , `unique_code` VARCHAR(250) NULL , `qr_code` VARCHAR(250) NULL , `account_balance` FLOAT NOT NULL DEFAULT '0' , `total_earned` DOUBLE NOT NULL DEFAULT '0' , `shop_name` VARCHAR(250) NULL , `customer_name` VARCHAR(250) NULL , `address` VARCHAR(250) NULL , `phone` VARCHAR(30) NULL , `city_id` INT NULL , `state_id` INT NULL , `vendor_status` TINYINT(1) NOT NULL DEFAULT '0' , `connected_with_shop` TINYINT(1) NOT NULL DEFAULT '0' , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`), UNIQUE (`unique_code`), UNIQUE (`qr_code`)) ENGINE = InnoDB;
+
+ALTER TABLE `local_vendor_marketing` ADD `is_used` TINYINT(1) NOT NULL DEFAULT '0' AFTER `connected_with_shop`;
+
+CREATE TABLE `local_vendor_usage` ( `id` INT NOT NULL AUTO_INCREMENT , `local_vendor_marketing_id` INT NOT NULL , `user_id` INT NOT NULL , `user_points` INT NOT NULL DEFAULT '0' , `local_vendor_commission` FLOAT NOT NULL DEFAULT '0' , `usage_type` ENUM('signup','scan') NOT NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `local_vendor_transaction` ( `id` INT NOT NULL AUTO_INCREMENT , `local_vendor_marketing_id` INT NOT NULL , `paid_amount` FLOAT NOT NULL , `payment_confirm_by` INT NOT NULL , `cheque_no` VARCHAR(50) NULL , `cheque_release_date` DATE NULL , `comments` VARCHAR(2000) NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `food_menu_item` ADD `food_menu_id` INT NOT NULL AFTER `food_menu_merchant_id`;
+-----------------------------------------------------------------------------------------
+
+ALTER TABLE `users` ADD `total_points` INT NOT NULL DEFAULT '0' AFTER `cart_data`, ADD `used_points` INT NOT NULL DEFAULT '0' AFTER `total_points`, ADD `referral_vendor_code` VARCHAR(20) NULL AFTER `used_points`, ADD `local_vendor_marketing_id` INT NULL AFTER `referral_vendor_code`;
+
+ALTER TABLE `users` ADD `available_points` INT NOT NULL DEFAULT '0' AFTER `cart_data`;
+
+ALTER TABLE `site_settings` ADD `site_name` VARCHAR(250) NULL AFTER `currency_id`;
+
+UPDATE `site_settings` SET `site_name` = 'ApoYou' WHERE `site_settings`.`id` = 1;
+
+ALTER TABLE `merchant_orders` ADD `merchant_payment_status` ENUM('paid','unpaid') NOT NULL DEFAULT 'unpaid' AFTER `order_status`;
+
+CREATE TABLE `merchant_transaction` ( `id` INT NOT NULL AUTO_INCREMENT , `listing_id` INT NOT NULL , `paid_amount` FLOAT NOT NULL , `payment_confirm_by` INT NOT NULL , `cheque_no` VARCHAR(250) NOT NULL , `cheque_release_date` DATE NOT NULL , `comments` VARCHAR(2000) NOT NULL , `created_at` TIMESTAMP NOT NULL , `updated_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+ALTER TABLE `merchant_orders` ADD `merchant_transaction_id` INT NULL AFTER `order_booking_id`;
+-----------------
+
+ALTER TABLE `users` ADD `verification_code` VARCHAR(15) NULL AFTER `local_vendor_marketing_id`;
+
+ALTER TABLE `subscription_pricing` ADD `description` VARCHAR(250) NULL AFTER `order_by`;
+
+----------------------------
+
+---------------------------------------------------------------------------------------
+ALTER TABLE `users` ADD `bio` VARCHAR(250) NULL AFTER `last_name`;
+ALTER TABLE `users` ADD `gender` VARCHAR(10) NULL AFTER `bio`;
+ALTER TABLE `orders` ADD `order_type` VARCHAR(50) NOT NULL AFTER `user_id`, ADD `order_booking_id` INT NULL AFTER `order_type`, ADD `appointment_booking_id` INT NULL AFTER `order_booking_id`, ADD `table_booking_id` INT NULL AFTER `appointment_booking_id`, ADD `service_booking_id` INT NULL AFTER `table_booking_id`;
+----------------------------------------------------------------------------------------
+
+ALTER TABLE `merchant_orders` CHANGE `id` `id` INT(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `orders` ADD `invoice_id` VARCHAR(25) NULL AFTER `id`, ADD UNIQUE (`invoice_id`);
+ALTER TABLE `merchant_orders` ADD `invoice_id` VARCHAR(25) NULL AFTER `id`, ADD UNIQUE (`invoice_id`);
+-----------------------------------------------------------------------------------------
+
+ALTER TABLE `order_booking` DROP `listing_id`, DROP `merchant_id`;
+
+ALTER TABLE `users` ADD UNIQUE(`mobile_no`);
+
+ALTER TABLE `users` ADD `website` VARCHAR(250) NULL AFTER `gender`;
+-----------------------------------------------------------------------------------------
+
+ALTER TABLE `order_booking_detail` ADD `product_id` INT NULL AFTER `item_id`;
+
+ALTER TABLE `order_booking_detail` CHANGE `item_id` `item_id` INT(11) NULL;
+
+-------------------------------------------------------------------------------------------
+ALTER TABLE `order_booking_detail` ADD `delevery_date` DATETIME NULL AFTER `status`;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ALTER TABLE `food_menu_item` CHANGE `description` `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ALTER TABLE `shop_alt_images` ADD `created_at` TIMESTAMP NULL AFTER `status`, ADD `updated_at` TIMESTAMP NULL AFTER `created_at`;
+
+ALTER TABLE `shop_products` ADD `status` INT NULL DEFAULT '0' AFTER `listing_id`;
+------------------------------------------------------------------------------------------
+
+ALTER TABLE `listing_review` CHANGE `rating` `rating` FLOAT NOT NULL DEFAULT '0';
+
+---------------------------------------------------------------------------------------------
+
+CREATE TABLE `product_review` (
+  `id` int(11) NOT NULL,
+  `merchant_id` int(11) DEFAULT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(250) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `comments` varchar(500) DEFAULT NULL,
+  `rating` varchar(10) DEFAULT NULL,
+  `location` varchar(20) DEFAULT NULL,
+  `approved` int(5) DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `product_review`
+  ADD PRIMARY KEY (`id`);
+  
+  ALTER TABLE `product_review`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+--------------------------------------------------------------------------------------------------
+
+ALTER TABLE `merchant_orders` ADD `delevery_date` DATETIME NULL AFTER `merchant_payment_status`;
+
+ALTER TABLE `listing` CHANGE `phoneno` `phoneno` VARCHAR(11) NOT NULL;
+--------------------------------------------------------------------------------------------------
+
+ALTER TABLE `order_booking_detail` ADD `delivery_date` DATETIME NULL AFTER `status`;
+--------------------------------------------------------------------------------------------------
+
+ALTER TABLE `subscription_pricing` ADD `is_hidden` TINYINT(1) NOT NULL DEFAULT '0' AFTER `description`;
+
+UPDATE `subscription_pricing` SET `is_hidden` = '1' WHERE `subscription_pricing`.`id` = 5;
+--------------------------------------------------------------------------------------------------
+
+ALTER TABLE `vendor_subscriptions` ADD `online_paid_amount` DOUBLE NULL AFTER `paid_amount`;
+
+----------------------------------------------------------------------------------------------------
+10-1-18 alex
+
+ALTER TABLE `appointment_booking_settings` ADD `holidays` VARCHAR(255) NULL DEFAULT NULL AFTER `people_limit`;
+
+ALTER TABLE `table_booking_settings` ADD `holidays` VARCHAR(255) NULL DEFAULT NULL AFTER `people_limit`;
+----------------------------------------------------------------------------------------------------
+
+ALTER TABLE `ads_position` ADD `slug` VARCHAR(200) NOT NULL AFTER `title`, ADD UNIQUE (`slug`);
+
+ALTER TABLE `ads_duration` DROP `duration_time`, DROP `days_month`;
+
+ALTER TABLE `ads_duration` ADD `display_value` VARCHAR(100) NOT NULL AFTER `id`, ADD `term_type` ENUM('month', 'year', 'days') NOT NULL AFTER `display_value`, ADD `term_value` INT NOT NULL AFTER `term_type`;
+
+ALTER TABLE `ads_duration` DROP `display_value`, DROP `term_type`, DROP `term_value`;
+
+ALTER TABLE `ads_duration` ADD `title` INT NOT NULL AFTER `id`, ADD `days_month` INT NOT NULL AFTER `title`;
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+
+alex-12-1-18
+
+CREATE TABLE `service_booking_settings` (
+  `id` int(11) NOT NULL,
+  `listing_id` int(11) NOT NULL,
+  `merchant_id` int(11) NOT NULL,
+  `start_time` varchar(5) NOT NULL,
+  `end_time` varchar(5) NOT NULL,
+  `per_hour_charge` int(11) NOT NULL,
+  `extra_hour_charge` int(11) NOT NULL,
+  `people_limit` int(11) NOT NULL,
+  `holidays` varchar(255) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `service_booking_settings`
+  ADD PRIMARY KEY (`id`);
+ALTER TABLE `service_booking_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;

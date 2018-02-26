@@ -1,0 +1,1 @@
+@include('layouts.'.$user_layout)

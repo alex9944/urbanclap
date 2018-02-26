@@ -1,0 +1,46 @@
+/*.heat-rating {
+	margin: 0px auto;
+	width: 210px;
+}*/
+.rating-block {
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	float: left;
+	cursor: pointer;
+	opacity: 0.5;
+	margin-right: 10px;
+}
+.ratings {
+	font-size: 14px;
+	line-height: 20px;
+	margin-left: 10px;
+	display: inline-block;
+}
+.one {
+	background-color: #cb202d;
+}
+.one-half {
+	background-color: #DE1D0F;
+}
+.two {
+	background-color: #FF7800;
+}
+.two-half {
+	background-color: #FFBA00;
+}
+.three {
+	background-color: #EDD614;
+}
+.three-half {
+	background-color: #9ACD32;
+}
+.four {
+	background-color: #5BA829;
+}
+.four-half {
+	background-color: #3F7E00;
+}
+.five {
+	background-color: #305D02;
+}

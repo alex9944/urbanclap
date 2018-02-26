@@ -1,0 +1,68 @@
+.orderList{
+      margin: 20px 0px;
+    }
+    .order_list_tv{
+      overflow-x: unset;
+    }
+    .order_list_tv span{
+      font-weight: 700;
+    }
+    .order_list_tv table{
+      color:#8b8b8b;
+      border:1px solid #111;
+    }
+    .orderList h3{
+      text-align:center;
+      color:#F05736;
+      text-decoration: underline;
+      text-decoration-color: #F05736;
+    }
+    .orderTabsBox{
+      text-align: center;
+    }
+    .orderTabsBox .orderTabs a.active{
+      background-color: #F05736 !important;
+      color: #FFF !important;
+      font-weight:600;
+    }
+    .orderTabsBox .orderTabs a{
+     color: #ffffff;
+     border-color: #ccc;
+     background: #ccc;
+     font-weight:600;
+   }
+   .product-ctrls .decline{
+    background-color: red;        
+  }
+  .product-ctrls .accept{
+    background-color: green;       
+  }
+  .product-ctrls .decline,.product-ctrls .accept{
+    text-align:center; 
+    border-radius:20px;
+    padding:5px;     
+  }
+  .product-ctrls .decline a,.product-ctrls .accept a{
+    color:#fff;
+  }
+  .orderTabsBox a.btn-cus{
+  width:46% !important;
+  border-radius: 14px !important;
+}
+ /*.order_list_tv  table tbody td ,.order_list_tv table thead th{
+    color: #8b8b8b; 
+    border: 1px solid #03A9F4;
+     border-top: 1px solid #03A9F4;
+}*/
+.orderHistoryList a{
+   border-radius: 10px;
+    border: 1px solid #2196F3;
+    background: white;
+    color: #2196F3;
+}
+.orderHistoryList a.active{
+    color: #2196F3 !important;
+    background-color: #bae9ff !important;
+    border-color: #2196F3 !important;
+     
+}

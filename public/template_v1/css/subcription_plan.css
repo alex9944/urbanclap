@@ -1,0 +1,153 @@
+
+
+.divbox{
+    position:relative;
+    padding-top:20px;
+  
+}
+.notify-badge{
+   position: absolute;
+    top: 10px;
+    background: #f14e32;
+    text-align: center;
+    border-radius: 90%;
+    color: white;
+    padding: 9px 10px;
+    font-size: 19px;
+    left: -12px;
+    z-index: 1;
+    height: 38px;
+}
+.wrapperbox {
+ height: 120px;
+    background: white;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px -1px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+  
+    border: 2px solid #03A9F4;         
+  	
+}
+.wrapperrec{
+ height: 120px;
+    background: white;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px -1px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+  
+    border: 2px solid #03A9F4;         
+  	
+}
+ .info{
+ 	    font-size: 27px;
+    padding: 3px;
+    color: #f14e32
+ }
+.duration-content{
+	    padding: 14px;
+	      color: #1395d1;
+}
+ .duration-content h6{
+ 	      font-size:35px;
+    padding: 13px;
+     color: #1395d1
+ }
+.duration-content span{
+	    color: #1395d1;
+	font-size:26px;
+} 
+.pad20{
+padding: 22px;
+}
+.pad10{
+	padding: 10px;
+}
+.pad20 h4{
+ color: #1395d1;
+ font-weight: 800;
+
+}
+.price-content{
+	     line-height: 24px;
+    font-size: 16px;
+    margin-top: 7%;
+}
+.blue{
+   color: #1395d1;
+}
+.orange{
+	    color: #f14e32;
+}
+.pay-content{
+	padding: 14px;
+    color: #1395d1;
+    text-align: -webkit-center;
+        line-height:4vh;
+}
+.pay-content div {
+	    font-size:45px;
+    text-align: -webkit-center;
+
+}
+.pay-content span {
+	      color: #8c8989;
+    font-size: 16px
+}
+.save-btn {
+	color:white !important;
+	background-color: #0a760a !important;
+	    letter-spacing: 2px;
+    font-weight: 300;
+    text-transform: uppercase;
+    margin-left: 37%;
+    margin-bottom:10px;
+}
+.pay-text{
+	    font-size: 20px;
+    color: #8c8989
+}
+.pay-text i{
+	color:#f14e32 !important;
+	font-size:15px;
+}
+
+/* Extra small devices (portrait phones, less than 576px)*/
+@media (max-width:320px) { 
+.wrapperbox{
+	height: 138px
+ }
+}
+
+/*// Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) and (max-width: 767px) {  }
+
+/*// Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) and (max-width: 991px) { }
+
+/*// Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) and (max-width: 1199px) {  }
+
+/*// Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {  }
+a.active .wrapperrec,a.active .wrapperbox{
+	    background:#dbdbdb !important;
+}
+a.active .notify-badge{
+	  display: block !important;
+}
+ 
+hr {
+  border: 1px solid #cfcfcf !important;
+}
+.hide{
+	display: none !important;
+}
+.show{
+	display: block !important;
+}
+.subdur{
+	margin-top: -62px;
+}
+.tab-content-details .tab-content{
+	    overflow: -webkit-paged-x;
+}

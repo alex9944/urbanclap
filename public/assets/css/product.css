@@ -1,0 +1,135 @@
+.nav-tabs>li {
+    float: left;
+    margin-bottom: -1px;
+  }
+  .nav>li {
+    position: relative;
+    display: block;
+  }
+  ul li {
+    list-style: none;
+  }
+  .nav-tabs li.active a {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #FE980F !important;
+    border: 0px;
+    color: #FFFFFF;
+    cursor: default;
+    margin-right: 0;
+    margin-left: 0;
+  }
+  .category-tab ul li a {
+    border: 0 none;
+    border-radius: 0;
+    color: #B3AFA8;
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  .nav-tabs li a {
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 4px 4px 0 0;
+    line-height: 1.42857;
+    margin-right: 0;
+  }
+
+  .nav-tabs>li>a {
+    margin-right: 2px;
+    line-height: 1.428571429;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+  }
+  .nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+  }
+  .nav-tabs li a{
+    background-color: #40403e;
+  }
+  .right {
+    right: 0;
+  }
+  #reviews ul {
+    background: #FFFFFF;
+    border: 0 none;
+    list-style: none outside none;
+    margin: 0 0 20px;
+    padding: 0;
+  }
+  #reviews ul li {
+    display: inline-block;
+  }
+  #reviews ul li a {
+    color: #696763;
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    padding-right: 15px;
+  }
+  #reviews p {
+    color: #363432;
+  }
+  #reviews form span {
+    display: block;
+  }
+  #reviews textarea {
+    background: #F0F0E9;
+    border: medium none;
+    color: #A6A6A1;
+    height: 195px;
+    margin-bottom: 25px;
+    margin-top: 15px;
+    outline: medium none;
+    padding-left: 10px;
+    padding-top: 15px;
+    resize: none;
+    width: 99.5%;
+  }
+  #reviews button {
+    background: #FE980F;
+    border: 0 none;
+    border-radius: 0;
+    color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+  }
+  #reviews form span input {
+    background: #F0F0E9;
+    border: 0 none;
+    color: #A6A6A1;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    outline: medium none;
+    padding: 8px;
+    width: 48%;
+  }
+  #preview{
+   margin-top: 10px;
+  width:350px;
+  height:400px;
+  background-repeat: no-repeat;
+  margin-left: auto;
+  margin-right: auto;
+  }
+  view-product{
+    text-align: center;
+  }
+  view-product img {  
+    margin: 10px;
+    display: block;
+    border: 2px solid #6A6462;
+  }
+  .view-product img:hover {
+    cursor: zoom-in;
+    border: 0;
+    -moz-box-shadow:2px 2px 7px 2px rgba(130,130,130,1),-1px -1px 7px 2px rgba(130,130,130,1);
+    -webkit-box-shadow: 2px 2px 7px 2px rgba(130,130,130,.7),-1px -1px 7px 2px rgba(130,130,130,1);
+    box-shadow: 2px 2px 7px 2px rgba(130,130,130,.7),-2px -2px 7px 2px rgba(130,130,130,1);
+  }
+
